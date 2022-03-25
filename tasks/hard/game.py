@@ -32,4 +32,77 @@
  Когда останется только один воин, то вывести сообщение "Победил воин: {winner.name}".
  Вернуть данного воина из метода battle.
 """
+
 import random
+
+
+class Warrior:
+    name: str
+    health_points: int   # (0,100)
+
+    def __init__(self, name):
+        self.name = name
+        self.health_points = 100
+
+    def hit(self, other):
+        if other.health_points > 0:
+            other.health_points = other.health_points - 20
+            print(f"{self.name} атаковал {other.name}. У {other.name} {other.health_points} HP.")
+        else:
+            raise ValueError("Второй воин мертв.")
+
+
+class Arena:
+    warriors = list()
+
+    def __init__(self, warriors=None):
+        if warriors is None:
+            warriors = []
+        self.warriors = warriors
+
+    def print_w(self):
+        print(self.warriors)
+
+    def add_warrior(self, new_warrior):
+        if new_warrior in self.warriors:
+            raise ValueError("Воин уже на арене.")
+        else:
+            self.warriors.append(new_warrior)
+            print(f"{new_warrior.name} участвует в битве.")
+
+    def choose_warrior(self):
+        return self.warriors[random.randrange(0, len(self.warriors))]
+
+    def battle(self):
+        if len(self.warriors) > 1:
+            while len(self.warriors) > 1:
+                attack = self.choose_warrior()
+                defender = self.choose_warrior()
+                if defender == attack:
+                    while defender == attack:
+                        defender = self.choose_warrior()
+                attack.hit(defender)
+                if defender.health_points <= 0:
+                    self.warriors.remove(defender)
+                    print(f"{defender.name} пал в битве.")
+            print(f"Победил воин: {self.warriors[0].name}.")
+            return self.warriors[0]
+        else:
+            raise ValueError("Количество воинов на арене должно быть больше 1.")
+
+
+if __name__ == "__main__":
+    sparta = Arena()
+    spartak = Warrior('Спартак')
+    krics = Warrior('Крикс')
+    cast = Warrior('Каст')
+    enomay = Warrior('Эномай')
+    publipor = Warrior('Публипор')
+    commod = Warrior('Коммод')
+    sparta.add_warrior(spartak)
+    sparta.add_warrior(krics)
+    sparta.add_warrior(cast)
+    sparta.add_warrior(enomay)
+    sparta.add_warrior(publipor)
+    sparta.add_warrior(commod)
+    sparta.battle()

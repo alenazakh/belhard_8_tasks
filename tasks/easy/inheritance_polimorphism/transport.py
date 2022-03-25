@@ -31,3 +31,60 @@
   вернуть строку "{brand} {model} ({color} - {issue_year}) пролетел {km}
   километров"
 """
+
+
+from abc import ABC, abstractmethod
+
+
+class Transport(ABC):
+    brand: str
+    model: str
+    issue_year: int
+    color: str
+    mileage: int
+
+    def __init__(self, brand, model, issue_year, color, mileage=0):
+        self.brand = brand
+        self.model = model
+        self.issue_year = issue_year
+        self.color = color
+        self.mileage = mileage
+
+    @abstractmethod
+    def move(self, num_km):
+        if num_km > 0:
+            self.mileage += num_km
+        else:
+            raise ValueError("Расстояние должно быть положительным числом.")
+
+
+class Car(Transport):
+    engine_type: str
+
+    def __init__(self, brand, model, issue_year, color, engine_type, mileage=0):
+        super().__init__(brand, model, issue_year, color, mileage)
+        self.engine_type = engine_type
+
+    def move(self, num_km):
+        super().move(num_km)
+        return(f"{self.brand} {self.model} ({self.color} - {self.issue_year}) проехала {self.mileage} километров")
+
+
+class Airplane(Transport):
+    lifting_capacity: int
+
+    def __init__(self, brand, model, issue_year, color, lifting_capacity, mileage=0):
+        super().__init__(brand, model, issue_year, color, mileage=0)
+        self.lifting_capacity = lifting_capacity
+
+    def move(self, num_km):
+        super().move(num_km)
+        return(f"{self.brand} {self.model} ({self.color} - {self.issue_year}) пролетел {self.mileage} километров")
+
+
+car1 = Car('Volvo', 'S40', 2004, 'черный', 'бензин')
+air1 = Airplane('Boeing', '747', 2011, 'белый', 128)
+print(car1.move(15))
+print(air1.move(1480))
+print(car1.move(100))
+print(air1.move(1255))

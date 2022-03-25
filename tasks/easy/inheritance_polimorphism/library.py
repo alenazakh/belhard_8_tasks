@@ -26,3 +26,51 @@
 
 Названия книг в сообщениях должны быть отсортированы по алфавиту.
 """
+
+
+class Person:
+    def __init__(self, fullname, phone):
+        self.fullname = fullname
+        self.phone = phone
+
+
+class LibraryReader(Person):
+    uid: int
+    books: set
+
+    def __init__(self, fullname, phone, uid, books=None):
+        super().__init__(fullname, phone)
+        if books is None:
+            books = set()
+        self.uid = uid
+        self.books = books
+
+    def take_books(self, *args):
+        self.books = self.books.union(args)    # set убирает автоматов повторы и выводит в сортированном порядке
+        if len(args) <= 3:
+            args = list(args)
+            args.sort()
+            return(f"{self.fullname} взял(а) книги: {', '.join(args)}")
+        else:
+            return(f"{self.fullname} взял(а) {len(args)} книги")
+
+    def return_book(self, *args):
+        args = set(args)    # set убирает автоматов повторы и выводит в сортированном порядке
+        if self.books.issuperset(args):
+            self.books = self.books.difference(args)
+            if len(args) <= 3:
+                lst = list(args)
+                lst.sort()
+                return(f"{self.fullname} вернул(а) книги: {', '.join(lst)}")
+            else:
+                return(f"{self.fullname} вернул(а) {len(args)} книги")
+        else:
+            raise ValueError(f"{self.fullname} не брал(а): {args.difference(self.books)}")
+
+
+reader5555 = LibraryReader('Ivanova Helen', '+375296555554', 5555)
+reader5557 = LibraryReader('Petrov Alex', '+375296555554', 5557)
+print(reader5555.take_books('Сто лет одиночества', 'Унесенные ветром', 'Алхимик'))
+print(reader5555.take_books('Приключения Арбузика и Бебешки', "Economics"))
+print(reader5555.return_book('Приключения Арбузика и Бебешки', 'Алхимик'))
+print(reader5555.books)
